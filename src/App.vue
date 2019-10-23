@@ -2,8 +2,7 @@
   <v-app>
     <v-app-bar app>
       <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
-        <span class="font-weight-light">MATERIAL DESIGN</span>
+        <span class="font-weight-light">My Weather App</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn
@@ -11,26 +10,34 @@
         href="https://github.com/vuetifyjs/vuetify/releases/latest"
         target="_blank"
       >
-        <span class="mr-2">Latest Release</span>
+        <v-icon>mail</v-icon>
       </v-btn>
     </v-app-bar>
 
     <v-content>
-      <HelloWorld/>
+      <Latitude/>
+      
+    </v-content>
+    <v-content>
+
     </v-content>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
-
+//import HelloWorld from './components/HelloWorld';
+import Latitude from './components/Latitude';
 export default {
   name: 'App',
   components: {
-    HelloWorld,
+    Latitude,
+    //HelloWorld,
   },
   data: () => ({
     //
   }),
+  created(){
+    //this.$vuetify.theme.dark = true
+  },
 };
 </script>
