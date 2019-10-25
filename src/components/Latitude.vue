@@ -5,7 +5,7 @@
       wrap
     >
     <v-flex xs12 v-if="location">
-        Your current location: {{lat}} m {{long}} {{info}}
+        Your current location: {{lat}} m {{long}}
     </v-flex>
     <v-flex xs12 v-else>
         <v-alert
@@ -45,6 +45,9 @@
     </v-container>
 </template>
 <script>
+const Server ={
+        API_KEY : '4708677713bf2fc70d94e2badeb41f0d'
+    };
 export default {
     data: () =>({
         lat:0,
@@ -65,9 +68,7 @@ export default {
                 this.location = true,
                 this.lat = pos.coords.latitude,
                 this.long = pos.coords.longitude,
-                this.$axios
-                .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-                .then(response => (this.info = response.data.time.updated));
+                this.info = Server.API_KEY
             });
         }
         else{
