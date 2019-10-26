@@ -24,7 +24,7 @@
           </v-alert>
         </v-flex>
       </v-container>
-      <CityWeather :item="current" />
+      <CityWeather v-if="current.data" :item="current" />
       <CityWeather v-for="city in saved" :item="city" v-bind:key="city.name"/>      
     </v-content>
   </v-app>
@@ -61,7 +61,7 @@ export default {
     callDarkSky: function(lat,long) {
       this.isLoading = true;
       axios.get('http://localhost:8080/' + lat + ',' + long + '?units=si')
-        .then(response => (this.current.data = response.data, this.isLoading = false))
+        .then(response => (this.current.data = response.data))
         .catch(error => (this.showError(error)))
         .finally(()=> (this.isLoading = false));
     },
