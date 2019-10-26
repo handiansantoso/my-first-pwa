@@ -7,6 +7,11 @@ module.exports = {
     "vuetify"
   ],
   devServer: {
-    proxy: Server.URI + Server.API_KEY
+    proxy: Server.URI + Server.API_KEY,
+    writeToDisk: true,
+    contentBase: './dist',
+  },
+  pwa: {
+    
   }
 }

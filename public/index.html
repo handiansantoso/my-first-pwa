@@ -8,7 +8,7 @@
     <title>My Weather PWA</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
-    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="manifest" href="manifest.json">
   </head>
   <body>
     <noscript>
@@ -17,4 +17,11 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
+  <script>
+    if('serviceWorker' in navigator) {
+      navigator.serviceWorker
+               .register('/sw.js')
+               .then(function() { console.log("Service Worker Registered"); });
+    }
+    </script>
 </html>
