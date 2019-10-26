@@ -14,6 +14,10 @@
     </v-app-bar>
     <v-content>
       <v-container>
+        <v-progress-linear
+      indeterminate
+      color="cyan" v-if="isLoading"
+    ></v-progress-linear>
         <v-flex xs12 v-if="errorMessage">
           <v-alert dense border="left" type="warning">
             {{errorMessage}}
@@ -28,31 +32,22 @@
 
 <script>
 import axios from 'axios';
-//import Latitude from './components/Latitude';
 import CityWeather from './components/CityWeather';
-import jdata from './assets/others.json';
 
-const Server ={
-  API_KEY : '4708677713bf2fc70d94e2badeb41f0d',
-  URI: 'https://api.darksky.net/forecast/',
-  UNITS: 'si'
-};
 export default {
   name: 'App',
   components: {
-    //Latitude,
     CityWeather,
   },
   data: () => ({
-    info:null,
+    isLoading:false,
     errorMessage:'',
-    apidata:null,
     current: {
       latitude:0,
       longitude:0,
-      city:'Singapore',
+      city:'',
       saved: false,
-      data: jdata
+      data: null
     },
     saved: []
   }),
@@ -61,25 +56,34 @@ export default {
       this.errorMessage = errString;
       setTimeout(() => {
         this.errorMessage = '';
-      }, 3000);
-    }
+      }, 10000);
+    },
+    callDarkSky: function(lat,long) {
+      this.isLoading = true;
+      axios.get('http://localhost:8080/' + lat + ',' + long + '?units=si')
+        .then(response => (this.current.data = response.data, this.isLoading = false))
+        .catch(error => (this.showError(error)))
+        .finally(()=> (this.isLoading = false));
+    },
   },
   created(){
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(pos =>{
         this.errorMessage = '',
         this.current.latitude = pos.coords.latitude,
-        this.current.longtude = pos.coords.longitude
+        this.current.longitude = pos.coords.longitude
+        this.current.city = 'My Location';
+        this.callDarkSky(this.current.latitude,this.current.longitude);        
       });
     }
     else{
-      //set default
-      //this.errorMessage = 'Browser does not support geolocation, showing default city';
       this.showError('Browser does not support geolocation, showing default city');
+      this.current.latitude = 7.2575;
+      this.current.longitude = 112.7521;
+      this.current.city = 'Surabaya, Indonesia';
+      this.callDarkSky(this.current.latitude,this.current.longitude);
     }
-    axios.get('https://api.coindesk.com/v1/bpi/currentprice.json')
-         .then(response => (this.apidata = response.data.time.updated));
-         this.info = Server.URI + Server.API_KEY + '/';// + moment.unix(this.current.data.currently.time).tz(this.current.data.timezone).toString();
+    
   },
 };
 </script>

@@ -12,10 +12,10 @@
                     <v-col class="display-3" cols="4">
                         {{item.data.currently.temperature}}&deg;C
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="4" class="pa-0">
                     <v-img
                         :src= "getImgUrl(item.data.currently.icon)" v-bind:alt="item.data.currently.icon"
-                        width="120"
+                        width="160"
                     ></v-img>
                     </v-col>
                     <v-col cols="4">
@@ -50,8 +50,10 @@
             </v-card-text>
             <v-card-text>
             <v-row>
-                <v-col v-for="hour in item.data.hourly.data" v-bind:key="hour.time">
-                    {{ moment.unix(hour.time).tz(item.data.timezone).format("ddd hh A") }}
+                <v-col col="1" v-for="hour in dayHours" v-bind:key="hour.time">
+                    {{Math.round(hour.temperature)}}&deg;C
+                    <br>
+                    {{ moment.unix(hour.time).tz(item.data.timezone).format("hh A") }}
                 </v-col>
             </v-row>
             <v-row>
@@ -70,10 +72,10 @@
                                 </v-col>
                                 <v-col cols="6">
                                     <v-row class="pa-0 text-center font-weight-bold">
-                                        {{day.temperatureLow}}&deg;C
+                                        {{Math.round(day.temperatureLow)}}&deg;C
                                     </v-row>
                                     <v-row>
-                                        {{day.temperatureHigh}}&deg;C
+                                        {{Math.round(day.temperatureHigh)}}&deg;C
                                     </v-row>
                                 </v-col>
                             </v-row>
@@ -102,9 +104,22 @@ export default {
     },
     computed: {
         dayHours: function() {
-            return this.props.data.hourly.data.filter(function(h){
-                return moment.unix(this.props.data.currently.time).tz(this.props.data.timezone).format("ddd") == moment.unix(h.time).tz(this.props.data.timezone).format("ddd"); 
-            })
+            let dayData = [];
+            let counter = 0;
+            this.item.data.hourly.data.forEach(element => {
+                if(counter < 12)
+                if(moment.unix(this.item.data.currently.time).tz(this.item.data.timezone).format("ddd") == moment.unix(element.time).tz(this.item.data.timezone).format("ddd")){
+                    dayData.push(element);
+                    counter++;
+                }                    
+                else
+                    if(counter > 0){
+                        dayData.push(element);
+                        counter++;
+                    }
+            
+            });
+            return dayData;
         }
     }
 }
