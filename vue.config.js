@@ -8,9 +8,7 @@ module.exports = {
   ],
   devServer: {
     proxy: Server.URI + Server.API_KEY,
-    writeToDisk: true,
-    contentBase: './dist',
-  },
+    },
   pwa: {
     
   }
