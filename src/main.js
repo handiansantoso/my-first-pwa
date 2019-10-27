@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import moment from 'moment-timezone';
+import './registerServiceWorker'
 
 Vue.config.productionTip = false
 Vue.prototype.moment = moment

@@ -5,12 +5,9 @@
         <span class="font-weight-light">My Weather App</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn
-        text
-        href="#"
-      >
-        <v-icon>mail</v-icon>
-      </v-btn>
+
+        <v-icon v-if="onLine" large color="green">signal_wifi_4_bar</v-icon>
+        <v-icon v-else large color="red">signal_wifi_off</v-icon>
     </v-app-bar>
     <v-content>
       <v-container>
@@ -33,13 +30,18 @@
 <script>
 import axios from 'axios';
 import CityWeather from './components/CityWeather';
-
+const Server ={
+  API_KEY : '4708677713bf2fc70d94e2badeb41f0d',
+  URI: 'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/'
+};
 export default {
   name: 'App',
   components: {
     CityWeather,
   },
   data: () => ({
+    onLine: navigator.onLine,
+    showBackOnline: false,
     isLoading:false,
     errorMessage:'',
     current: {
@@ -60,12 +62,36 @@ export default {
     },
     callDarkSky: function(lat,long) {
       this.isLoading = true;
-      axios.get('http://localhost:8080/' + lat + ',' + long + '?units=si')
+      axios.get(Server.URI + Server.API_KEY + '/' + lat + ',' + long + '?units=si') //'http://localhost:8080/'
         .then(response => (this.current.data = response.data))
         .catch(error => (this.showError(error)))
         .finally(()=> (this.isLoading = false));
     },
+    updateOnlineStatus(e) {
+      const {
+        type
+      } = e;
+      this.onLine = type === 'online';
+    },
   },
+  watch: {
+        onLine(v) {
+            if (v) {
+                this.showBackOnline = true;
+                setTimeout(() => {
+                    this.showBackOnline = false;
+                }, 1000);
+            }
+        }
+    },
+    mounted() {
+        window.addEventListener('online', this.updateOnlineStatus);
+        window.addEventListener('offline', this.updateOnlineStatus);
+    },
+    beforeDestroy() {
+        window.removeEventListener('online', this.updateOnlineStatus);
+        window.removeEventListener('offline', this.updateOnlineStatus);
+    },
   created(){
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(pos =>{
