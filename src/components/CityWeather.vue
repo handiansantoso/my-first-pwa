@@ -4,60 +4,13 @@
             <v-list-item two-line>
                 <v-list-item-content>
                     <v-list-item-title class="headline">{{item.city}}</v-list-item-title>
-                    <v-list-item-subtitle>{{ moment.unix(item.data.currently.time).tz(item.data.timezone).format("ddd, hh:mm A") }}, {{item.data.currently.summary}}</v-list-item-subtitle>
+                    <v-list-item-subtitle v-if="selectedDay">{{ moment.unix(selectedDay.time).tz(item.data.timezone).format("ddd, hh:mm A") }}, {{selectedDay.summary}}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
-            <v-card-text>
-                <v-row align="center">
-                    <v-col class="display-3" cols="4">
-                        {{item.data.currently.temperature}}&deg;C
-                    </v-col>
-                    <v-col cols="4" class="pa-0">
-                    <v-img
-                        :src= "getImgUrl(item.data.currently.icon)" v-bind:alt="item.data.currently.icon"
-                        width="160"
-                    ></v-img>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-row align="center">
-                            <v-col cols="6" class="pa-0" >
-                                Humidity:
-                            </v-col>
-                            <v-col cols="6" class="pa-0">
-                                {{item.data.currently.humidity}}
-                            </v-col>
-                            <v-col cols="6" class="pa-0" >
-                                Wind Speed:
-                            </v-col>
-                            <v-col cols="6" class="pa-0" >
-                                {{item.data.currently.windSpeed}} M/s
-                            </v-col>
-                            <v-col cols="6" class="pa-0" >
-                                UV Index:
-                            </v-col>
-                            <v-col cols="6" class="pa-0" >
-                                {{item.data.currently.uvIndex}}
-                            </v-col>
-                            <v-col cols="6" class="pa-0" >
-                                Visibility:
-                            </v-col>
-                            <v-col cols="6" class="pa-0" >
-                                {{item.data.currently.visibility}} Km
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                </v-row>
-            </v-card-text>
+            <DailyDisplay v-if="selectedDay" :day="selectedDay" :hours="selectedHours" :timezone="item.data.timezone"/>
             <v-card-text>
             <v-row>
-                <v-col col="1" v-for="hour in dayHours" v-bind:key="hour.time">
-                    {{Math.round(hour.temperature)}}&deg;C
-                    <br>
-                    {{ moment.unix(hour.time).tz(item.data.timezone).format("hh A") }}
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col v-for="day in item.data.daily.data" v-bind:key="day.time">
+                <v-col v-for="day in item.data.daily.data" v-bind:key="day.time" v-on:click="setDayHour(day.time)" :style="{ cursor: 'pointer'}">
                     <v-row>
                         <v-col cols="12" class="pa-0 text-center">
                             {{ moment.unix(day.time).tz(item.data.timezone).format("ddd") }}
@@ -92,36 +45,47 @@
     </v-container>
 </template>
 <script>
+
+import DailyDisplay from './DailyDisplay';
 import moment from 'moment-timezone';
 export default {
+    components: {
+        DailyDisplay,
+    },
     props: ['item'],
     data: ()=>({
-
+        selectedDay: null,
+        selectedHours: null
     }),
     methods: {
         getImgUrl(pic) {
             return require('../assets/'+pic +'.svg')
-        }
-    },
-    computed: {
-        dayHours: function() {
-            let dayData = [];
+        },
+        setDayHour(time){
+            
+            this.selectedDay = this.item.data.daily.data.filter(c=>c.time == time)[0];
+            this.selectedHours = [];
             let counter = 0;
-            this.item.data.hourly.data.forEach(element => {
+            let day = moment.unix(time).tz(this.item.data.timezone).format("DD ddd");
+            this.item.data.hourly.data.forEach(e => {
                 if(counter < 12)
-                if(moment.unix(this.item.data.currently.time).tz(this.item.data.timezone).format("ddd") == moment.unix(element.time).tz(this.item.data.timezone).format("ddd")){
-                    dayData.push(element);
-                    counter++;
-                }                    
-                else
-                    if(counter > 0){
-                        dayData.push(element);
+                    if(day == moment.unix(e.time).tz(this.item.data.timezone).format("DD ddd")){
+                        this.selectedHours.push(e);
                         counter++;
                     }
-            
+                    else {
+                        if(counter > 0) {
+                            this.selectedHours.push(e);
+                            counter++; 
+                        }
+                    }
             });
-            return dayData;
         }
+    },
+    mounted() {
+        
+        this.setDayHour(this.item.data.currently.time);
+        this.selectedDay = this.item.data.currently;
     }
 }
 </script>
