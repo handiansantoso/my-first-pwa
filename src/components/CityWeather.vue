@@ -85,7 +85,7 @@
             </v-row>
             </v-card-text>
             <v-card-actions v-if="!item.saved">
-                <v-btn><v-icon>favorite_border</v-icon></v-btn>
+                <v-btn v-on:click="$emit('saveToFav')"><v-icon>favorite_border</v-icon></v-btn>
             </v-card-actions>
         </v-card>
     </v-container>

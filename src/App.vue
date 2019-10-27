@@ -22,7 +22,7 @@
           </v-alert>
         </v-flex>
       </v-container>
-      <CityWeather v-if="current.data" :item="current" />
+      <CityWeather v-if="current.data" :item="current" v-on:saveToFav="saveCityFavourite"/>
       <CityWeather v-for="city in saved" :item="city" v-bind:key="city.name"/>      
     </v-content>
   </v-app>
@@ -65,8 +65,9 @@ export default {
       }, 10000);
     },
     callDarkSky: function(lat,long) {
-      this.latitude = lat;
-      this.longitude = long;
+      this.current.latitude = lat;
+      this.current.longitude = long;
+      this.current.data = null;
       this.isLoading = true;
       axios.get(Server.URI + Server.API_KEY + '/' + lat + ',' + long + '?units=si') //'http://localhost:8080/'
         .then(response => (this.current.data = response.data))
@@ -78,8 +79,7 @@ export default {
       if(selected != undefined && selected != null)
       {  
         this.current.city = selected[0].name;
-        this.callDarkSky(selected[0].latitude,selected[0].longitude);
-        
+        this.callDarkSky(selected[0].latitude,selected[0].longitude);        
       }
     },
     updateOnlineStatus(e) {
@@ -88,6 +88,21 @@ export default {
       } = e;
       this.onLine = type === 'online';
     },
+    saveCityFavourite:function() {
+      let exists = this.saved.filter(d=>d.city === this.current.city);
+      if(exists != undefined && exists != null && exists.length > 0){
+        this.showError(this.current.city + ' exists in favourites, it will not be added.');
+        return;
+      }
+      let obj = Object.assign({},this.current);
+      obj.saved = true;
+
+      this.saved.push(obj);
+      this.current.city = '';
+      this.current.latitude = 0;
+      this.current.longitude = 0;
+      this.current.data = null;
+    }
   },
   watch: {
         onLine(v) {
