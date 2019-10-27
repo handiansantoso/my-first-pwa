@@ -84,8 +84,9 @@
                 </v-col>
             </v-row>
             </v-card-text>
-            <v-card-actions v-if="!item.saved">
-                <v-btn v-on:click="$emit('saveToFav')"><v-icon>favorite_border</v-icon></v-btn>
+            <v-card-actions>
+                <v-btn v-if="!item.saved" v-on:click="$emit('saveToFav')"><v-icon>favorite_border</v-icon></v-btn>
+                <v-btn v-else v-on:click="$emit('deleteFromFav',item.city)"><v-icon>delete</v-icon></v-btn>
             </v-card-actions>
         </v-card>
     </v-container>

@@ -23,7 +23,7 @@
         </v-flex>
       </v-container>
       <CityWeather v-if="current.data" :item="current" v-on:saveToFav="saveCityFavourite"/>
-      <CityWeather v-for="city in saved" :item="city" v-bind:key="city.name"/>      
+      <CityWeather v-for="city in saved" :item="city" v-bind:key="city.name" v-on:deleteFromFav="removeCityFavourite"/>      
     </v-content>
   </v-app>
 </template>
@@ -102,6 +102,9 @@ export default {
       this.current.latitude = 0;
       this.current.longitude = 0;
       this.current.data = null;
+    },
+    removeCityFavourite: function(city) {
+      this.saved = this.saved.filter(c=>c.city != city);
     }
   },
   watch: {
