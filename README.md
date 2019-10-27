@@ -5,20 +5,19 @@
 yarn install
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
 ### Compiles and minifies for production
 ```
 yarn build
 ```
 
-### Lints and fixes files
+### Run project usint http-server module
 ```
-yarn lint
+http-server dist
 ```
 
+### Test PWA web app
+```
+http:\\localhost:8080\index.html
+```
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

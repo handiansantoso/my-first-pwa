@@ -23,9 +23,8 @@ module.exports = {
       runtimeCaching:[
         {
           urlPattern: new RegExp('^https://cors-anywhere.herokuapp.com/'), //http://localhost:8080/'),
-          handler: 'NetworkFirst',
+          handler: 'CacheFirst',
           options: {
-            networkTimeoutSeconds: 20,
             cacheName: 'api-cache',
             cacheableResponse:{
               statuses: [0,200]

@@ -1,0 +1,61 @@
+[{
+    "name":"Singapore",
+    "latitude":1.3521,
+    "longitude":103.8198
+},
+{
+    "name":"Kuala Lumpur, Malaysia",
+    "latitude":3.1390,
+    "longitude":101.6869
+},
+{
+    "name":"Bangkok, Thailand",
+    "latitude":13.7563,
+    "longitude":100.5018
+},
+{
+    "name":"Ho Chi Minh, Vietnam",
+    "latitude":10.8231,
+    "longitude":106.6297
+},
+{
+    "name":"Surabaya, Indonesia",
+    "latitude":7.2575,
+    "longitude":112.7521
+},
+{
+    "name":"Jakarta, Indonesia",
+    "latitude":6.2088,
+    "longitude":106.8456
+},
+{
+    "name":"Austin, TX, USA",
+    "latitude":30.2672,
+    "longitude":-97.7431
+},
+{
+    "name":"San Francisco, CA, USA",
+    "latitude":29.4241,
+    "longitude":-98.4936
+},
+{
+    "name":"Melbourne, VIC, Australia",
+    "latitude":37.8136,
+    "longitude":-144.9631
+},
+{
+    "name":"Sydney, NSW, Australia",
+    "latitude":33.8688,
+    "longitude":151.2093
+},
+{
+    "name":"London, UK",
+    "latitude":51.5074,
+    "longitude":-0.1278
+},
+{
+    "name":"Victoria, BC, Canada",
+    "latitude":48.4284,
+    "longitude":123.3656
+}
+]

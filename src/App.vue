@@ -5,11 +5,12 @@
         <span class="font-weight-light">My Weather App</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-
         <v-icon v-if="onLine" large color="green">signal_wifi_4_bar</v-icon>
         <v-icon v-else large color="red">signal_wifi_off</v-icon>
     </v-app-bar>
     <v-content>
+      <v-select :items="cities" item-text="name" label="City" @change="loadCity" v-model="selectedCity">
+      </v-select>
       <v-container>
         <v-progress-linear
       indeterminate
@@ -30,6 +31,7 @@
 <script>
 import axios from 'axios';
 import CityWeather from './components/CityWeather';
+import cities from './assets/cities.json';
 const Server ={
   API_KEY : '4708677713bf2fc70d94e2badeb41f0d',
   URI: 'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/'
@@ -40,6 +42,8 @@ export default {
     CityWeather,
   },
   data: () => ({
+    cities: cities,
+    selectedCity: null,
     onLine: navigator.onLine,
     showBackOnline: false,
     isLoading:false,
@@ -61,11 +65,22 @@ export default {
       }, 10000);
     },
     callDarkSky: function(lat,long) {
+      this.latitude = lat;
+      this.longitude = long;
       this.isLoading = true;
       axios.get(Server.URI + Server.API_KEY + '/' + lat + ',' + long + '?units=si') //'http://localhost:8080/'
         .then(response => (this.current.data = response.data))
         .catch(error => (this.showError(error)))
-        .finally(()=> (this.isLoading = false));
+        .finally(()=> (this.isLoading = false,this.selectedCity = ''));
+    },
+    loadCity: function(val){
+      let selected = this.cities.filter(d=>d.name === val);
+      if(selected != undefined && selected != null)
+      {  
+        this.current.city = selected[0].name;
+        this.callDarkSky(selected[0].latitude,selected[0].longitude);
+        
+      }
     },
     updateOnlineStatus(e) {
       const {
@@ -96,18 +111,18 @@ export default {
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(pos =>{
         this.errorMessage = '',
-        this.current.latitude = pos.coords.latitude,
-        this.current.longitude = pos.coords.longitude
+        //this.current.latitude = pos.coords.latitude,
+        //this.current.longitude = pos.coords.longitude
         this.current.city = 'My Location';
-        this.callDarkSky(this.current.latitude,this.current.longitude);        
+        this.callDarkSky(pos.coords.latitude,pos.coords.longitude);        
       });
     }
     else{
-      this.showError('Browser does not support geolocation, showing default city');
-      this.current.latitude = 7.2575;
-      this.current.longitude = 112.7521;
-      this.current.city = 'Surabaya, Indonesia';
-      this.callDarkSky(this.current.latitude,this.current.longitude);
+      this.showError('Browser does not support geolocation, please select city from select box');
+      //this.current.latitude = 7.2575;
+      //this.current.longitude = 112.7521;
+      //this.current.city = 'Surabaya, Indonesia';
+      //this.callDarkSky(this.current.latitude,this.current.longitude);
     }
     
   },
