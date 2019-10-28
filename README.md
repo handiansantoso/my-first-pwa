@@ -4,7 +4,8 @@
 ```
 yarn install
 ```
-
+### Get API KEY from https://darksky.net/dev/
+### Enter dark sky API KEY in ./src/server-constants.mjs
 ### Compiles and minifies for production
 ```
 yarn build

@@ -32,12 +32,10 @@
 import axios from 'axios';
 import CityWeather from './components/CityWeather';
 import cities from './assets/cities.json';
-const Server ={
-  API_KEY : '4708677713bf2fc70d94e2badeb41f0d',
-  URI: 'https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/'
-};
+import { API_KEY, PROXY,DARK_SKY} from './server-constants';
+
 export default {
-  name: 'App',
+  name: 'App', 
   components: {
     CityWeather,
   },
@@ -69,7 +67,7 @@ export default {
       this.current.longitude = long;
       this.current.data = null;
       this.isLoading = true;
-      axios.get(Server.URI + Server.API_KEY + '/' + lat + ',' + long + '?units=si') //'http://localhost:8080/'
+      axios.get(PROXY + DARK_SKY + API_KEY + '/' + lat + ',' + long + '?units=si') //'http://localhost:8080/'
         .then(response => (this.current.data = response.data))
         .catch(error => (this.showError(error)))
         .finally(()=> (this.isLoading = false,this.selectedCity = ''));

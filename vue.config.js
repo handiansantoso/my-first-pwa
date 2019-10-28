@@ -1,14 +1,11 @@
-const Server ={
-  API_KEY : '4708677713bf2fc70d94e2badeb41f0d',
-  URI: 'https://api.darksky.net/forecast/'
-};
+const PROXY = 'https://cors-anywhere.herokuapp.com/';
 module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
-  devServer: {
-    proxy: Server.URI + Server.API_KEY,
-    },
+  //devServer: {
+  //  proxy: Server.URI + Server.API_KEY,
+  //  },
   pwa: {
     name: 'My Weather App',
     themeColor: '#FFFFFF',
@@ -22,7 +19,7 @@ module.exports = {
       navigateFallback:'/index.html',
       runtimeCaching:[
         {
-          urlPattern: new RegExp('^https://cors-anywhere.herokuapp.com/'), //http://localhost:8080/'),
+          urlPattern: new RegExp('^' + PROXY), //http://localhost:8080/'),
           handler: 'CacheFirst',
           options: {
             cacheName: 'api-cache',
